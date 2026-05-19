@@ -1,0 +1,21 @@
+{
+  "clear": null,
+  "bassboost": "bass=g=8",
+  "heavybass": "bass=g=20",
+  "nightcore": "aresample=48000,asetrate=48000*1.25",
+  "vaporwave": "aresample=48000,asetrate=48000*0.8",
+  "8d": "apulsator=hz=0.08",
+  "treble": "treble=g=5",
+  "karaoke": "stereotools=mlev=0.03",
+  "flanger": "flanger",
+  "gate": "agate",
+  "haas": "haas",
+  "vibrato": "vibrato=f=6.5",
+  "tremolo": "tremolo",
+  "phaser": "aphaser=in_gain=0.4",
+  "reverse": "areverse",
+  "surrounding": "surround",
+  "pulsator": "apulsator=hz=1",
+  "subboost": "asubboost",
+  "earrape": "bass=g=50"
+}

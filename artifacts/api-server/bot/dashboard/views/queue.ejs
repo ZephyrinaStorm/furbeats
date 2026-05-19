@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HowlBeats — <%= guild ? guild.name : 'Queue' %> Live Queue</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 64 }) : '/logo.png' %>">
+</head>
+<body>
+<%- include('header', { currentPage: 'dashboard' }) %>
+
+<div class="queue-page">
+  <div class="queue-page-header">
+    <% if (guild && guild.icon) { %>
+      <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png?size=64"
+        style="width:40px;height:40px;border-radius:50%;border:2px solid var(--primary);object-fit:cover;" alt="">
+    <% } %>
+    <h1>🎵 Live Queue</h1>
+    <% if (guild) { %><span class="queue-guild-name">— <%= guild.name %></span><% } %>
+    <div class="queue-refresh-indicator">
+      <span class="refresh-dot"></span>
+      <span>Auto-updating</span>
+    </div>
+    <% if (guild) { %><a href="/dashboard/<%= guild.id %>" class="btn btn-ghost btn-sm">⚙️ Settings</a><% } %>
+  </div>
+
+  <div id="queue-container">
+    <%- queueHtml %>
+  </div>
+</div>
+
+<footer>
+  <strong>HowlBeats</strong> — Live Queue &bull; Updates every 3 seconds
+</footer>
+
+<script>
+<% if (guild) { %>
+  let refreshTimer;
+  let consecutiveErrors = 0;
+
+  function refreshQueue() {
+    fetch('/api/queue/<%= guild.id %>')
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById('queue-container').innerHTML = data.html;
+        consecutiveErrors = 0;
+      })
+      .catch(() => {
+        consecutiveErrors++;
+        if (consecutiveErrors > 5) clearInterval(refreshTimer);
+      });
+  }
+
+  refreshTimer = setInterval(refreshQueue, 3000);
+<% } %>
+</script>
+</body>
+</html>

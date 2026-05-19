@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HowlBeats — Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 64 }) : '/logo.png' %>">
+</head>
+<body>
+<%- include('header', { currentPage: 'dashboard' }) %>
+
+<% const errorMsg = locals.query && locals.query.error; %>
+<% if (errorMsg) { %><div class="notice-bar error">⚠️ <%= decodeURIComponent(errorMsg) %></div><% } %>
+
+<div class="dash-page">
+  <% if (user && user.id) { %>
+    <h1>🎛 Dashboard</h1>
+    <p>Select a server to manage its HowlBeats settings. You need <strong>Manage Server</strong> permission.</p>
+
+    <%
+      const managedGuilds = user.guilds
+        .filter(g => {
+          try {
+            const perms = BigInt(g.permissions_new || g.permissions || 0);
+            return (perms & BigInt(0x20)) !== BigInt(0);
+          } catch { return false; }
+        })
+        .sort((a, b) => botClient.guilds.cache.has(a.id) ? -1 : 1);
+    %>
+
+    <% if (managedGuilds.length === 0) { %>
+      <div style="text-align:center;padding:4rem;color:var(--text-muted);">
+        <div style="font-size:3rem;margin-bottom:1rem;">😿</div>
+        <p>You don't have Manage Server permission in any servers HowlBeats is in.</p>
+      </div>
+    <% } else { %>
+      <div style="margin-bottom:1rem;color:var(--text-muted);font-size:0.9rem;">
+        <%= managedGuilds.filter(g => botClient.guilds.cache.has(g.id)).length %> of <%= managedGuilds.length %> servers have HowlBeats
+      </div>
+      <div class="guilds-grid">
+        <% managedGuilds.forEach(guild => {
+          const botInServer = botClient.guilds.cache.has(guild.id);
+          const player = botInServer && botClient.kazagumo ? botClient.kazagumo.players.get(guild.id) : null;
+        %>
+        <div class="guild-card" style="<%= !botInServer ? 'opacity:0.6;' : '' %>">
+          <div class="guild-card-thumb" style="position:relative;">
+            <% if (guild.icon) { %>
+              <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png?size=256" alt="<%= guild.name %>"
+                style="width:100%;height:120px;object-fit:cover;">
+            <% } else { %>
+              <div style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:3rem;background:var(--bg3);">🐾</div>
+            <% } %>
+            <% if (player && player.queue.current) { %>
+              <div class="guild-active-badge">🎵 Playing</div>
+            <% } %>
+          </div>
+          <div class="guild-card-body">
+            <h4 title="<%= guild.name %>"><%= guild.name %></h4>
+            <% if (player && player.queue.current) { %>
+              <div class="guild-meta" style="font-size:0.78rem;margin-bottom:0.6rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--primary-light);">
+                ♪ <%= (player.queue.current.title || 'Unknown').slice(0,30) %>
+              </div>
+            <% } else if (botInServer) { %>
+              <div class="guild-meta">Bot active</div>
+            <% } else { %>
+              <div class="guild-meta">Bot not in server</div>
+            <% } %>
+            <% if (botInServer) { %>
+              <div style="display:flex;gap:0.5rem;">
+                <a href="/dashboard/<%= guild.id %>" class="btn btn-success btn-sm" style="flex:1;justify-content:center;">⚙️ Settings</a>
+                <a href="/queue/<%= guild.id %>" class="btn btn-ghost btn-sm">🎵</a>
+              </div>
+            <% } else { %>
+              <a href="https://discord.com/oauth2/authorize?client_id=<%= botClient.user ? botClient.user.id : '' %>&scope=bot%20applications.commands&guild_id=<%= guild.id %>&response_type=code&redirect_uri=<%= encodeURIComponent(callback) %>"
+                class="btn btn-primary btn-sm" style="width:100%;justify-content:center;">📩 Invite</a>
+            <% } %>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    <% } %>
+  <% } else { %>
+    <div class="login-prompt">
+      <div class="big-icon">🐾</div>
+      <h2>Login to manage your servers</h2>
+      <p>Sign in with Discord to access the HowlBeats dashboard and manage your server settings, view live queues, and more.</p>
+      <a href="/login" class="btn btn-primary btn-lg">🎮 Login with Discord</a>
+    </div>
+  <% } %>
+</div>
+
+<footer>
+  <strong>HowlBeats</strong> — Dashboard &bull; Powered by Lavalink
+</footer>
+</body>
+</html>

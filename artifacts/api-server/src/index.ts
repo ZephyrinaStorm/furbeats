@@ -1,31 +1,39 @@
-import path from "node:path";
-import { fileURLToPath } from "node:url";
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import { pinoHttp } from "pino-http";
-import { pino } from "pino";
+import { logger } from "./lib/logger";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rawPort = process.env["PORT"];
 
-const logger = pino({ transport: { target: "pino-pretty" } });
+if (!rawPort) {
+  throw new Error("PORT environment variable is required but was not provided.");
+}
 
-const DASHBOARD_PORT = Number(process.env.PORT || 8080);
-const WEB_ONLY = process.env.WEB_ONLY === "true";
+const port = Number(rawPort);
 
-// globalThis.require is injected by esbuild banner so CJS bot code can be loaded
-const botEntry = globalThis.require(
-  path.resolve(__dirname, "..", "bot", "index.js"),
-) as {
-  client: unknown;
-  start: (port: number) => void;
-  startWebOnly: (port: number) => void;
-};
+if (Number.isNaN(port) || port <= 0) {
+  throw new Error(`Invalid PORT value: "${rawPort}"`);
+}
 
-if (WEB_ONLY) {
-  logger.info("Starting in web-only mode");
-  botEntry.startWebOnly(DASHBOARD_PORT);
+// The esbuild banner injects globalThis.require and globalThis.__dirname
+// so we can load CommonJS bot code from this ESM entry point.
+const _require = (globalThis as any).require as NodeRequire;
+const _dirname = (globalThis as any).__dirname as string;
+
+if (!_require || !_dirname) {
+  throw new Error("globalThis.require or __dirname not available — check build banner.");
+}
+
+const nodePath = _require("path");
+const botEntry = nodePath.join(_dirname, "../bot/index.js");
+
+logger.info({ botEntry }, "Loading HowlBeats bot");
+
+const webOnly = process.env["WEB_ONLY"] === "true";
+
+if (webOnly) {
+  const { startWebOnly } = _require(botEntry) as { startWebOnly: (port: number) => void };
+  logger.info({ port }, "HowlBeats starting in web-only mode (dashboard only)");
+  startWebOnly(port);
 } else {
-  logger.info("Starting bot + dashboard");
-  botEntry.start(DASHBOARD_PORT);
+  const { start } = _require(botEntry) as { start: (port: number) => void };
+  start(port);
+  logger.info({ port }, "HowlBeats bot started");
 }

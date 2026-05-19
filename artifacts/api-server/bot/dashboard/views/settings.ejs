@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HowlBeats — <%= guild.name %> Settings</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 64 }) : '/logo.png' %>">
+</head>
+<body>
+<%- include('header', { currentPage: 'dashboard' }) %>
+
+<div class="settings-page">
+  <div class="settings-guild-header">
+    <% if (guild.icon) { %>
+      <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png?size=128" alt="<%= guild.name %>">
+    <% } else { %>
+      <div class="settings-guild-avatar">🐾</div>
+    <% } %>
+    <div>
+      <h1><%= guild.name %></h1>
+      <a href="/dashboard">← Back to Dashboard</a>
+    </div>
+    <% const player = botClient.kazagumo ? botClient.kazagumo.players.get(guild.id) : null; %>
+    <% if (player && player.queue.current) { %>
+      <div style="margin-left:auto;">
+        <a href="/queue/<%= guild.id %>" class="btn btn-primary btn-sm">🎵 Live Queue</a>
+      </div>
+    <% } %>
+  </div>
+
+  <% if (saved) { %>
+    <div class="alert-success">✅ Settings saved successfully!</div>
+  <% } %>
+
+  <form method="POST">
+    <!-- GENERAL -->
+    <div class="settings-card">
+      <h3>⚙️ General Settings</h3>
+
+      <div class="form-group">
+        <label class="form-label">Command Prefix</label>
+        <input type="text" class="form-control" name="prefix"
+          value="<%= botClient.settings.get(guild.id, 'prefix') || 'f!' %>"
+          maxlength="8" style="max-width:180px;" placeholder="f!">
+        <p class="form-hint">The prefix for text commands (slash commands always work regardless).</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Default Volume: <span id="volDisplay" style="color:var(--primary);"><%= botClient.settings.get(guild.id, 'defaultvolume') || 80 %></span>%</label>
+        <div class="range-wrap">
+          <input type="range" class="form-range" name="defaultvolume"
+            min="1" max="150" value="<%= botClient.settings.get(guild.id, 'defaultvolume') || 80 %>"
+            oninput="document.getElementById('volDisplay').textContent=this.value">
+          <span class="range-val" id="volVal"><%= botClient.settings.get(guild.id, 'defaultvolume') || 80 %>%</span>
+        </div>
+        <p class="form-hint">New players start at this volume (1–150%).</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Default Autoplay</label>
+        <div class="toggle-row">
+          <label class="toggle-switch">
+            <input type="checkbox" name="defaultautoplay" value="true"
+              <%= botClient.settings.get(guild.id, 'defaultautoplay') ? 'checked' : '' %>>
+            <span class="toggle-track"></span>
+          </label>
+          <span class="toggle-label">Automatically play related songs when the queue ends</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DJ ROLES -->
+    <div class="settings-card">
+      <h3>🎧 DJ Roles</h3>
+      <p class="form-hint" style="margin-bottom:1rem;">Members with these roles can control music playback. Song requesters can always control their own tracks. Leave empty to allow everyone.</p>
+      <select class="form-control" name="djroles" multiple size="6" style="height:auto;">
+        <% guild.roles.cache
+          .filter(r => !r.managed && r.id !== guild.id)
+          .sort((a, b) => b.rawPosition - a.rawPosition)
+          .forEach(role => { %>
+          <option value="<%= role.id %>"
+            <%= (botClient.settings.get(guild.id, 'djroles') || []).includes(role.id) ? 'selected' : '' %>>
+            @<%= role.name %>
+          </option>
+        <% }) %>
+      </select>
+      <p class="form-hint" style="margin-top:0.5rem;">Hold <kbd>Ctrl</kbd> / <kbd>Cmd</kbd> to select multiple. Select none = everyone can control music.</p>
+    </div>
+
+    <!-- BOT CHANNELS -->
+    <div class="settings-card">
+      <h3>📣 Bot Channels</h3>
+      <p class="form-hint" style="margin-bottom:1rem;">HowlBeats will only respond to prefix commands in these channels. Leave empty to respond everywhere. Slash commands always work everywhere.</p>
+      <select class="form-control" name="botchannel" multiple size="6" style="height:auto;">
+        <% guild.channels.cache
+          .filter(c => c.type === 0)
+          .sort((a, b) => a.rawPosition - b.rawPosition)
+          .forEach(channel => { %>
+          <option value="<%= channel.id %>"
+            <%= (botClient.settings.get(guild.id, 'botchannel') || []).includes(channel.id) ? 'selected' : '' %>>
+            #<%= channel.name %>
+          </option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="settings-actions">
+      <a href="/queue/<%= guild.id %>" class="btn btn-ghost">🎵 View Live Queue</a>
+      <a href="/dashboard" class="btn btn-secondary">← Back</a>
+      <button type="submit" class="btn btn-primary">🐾 Save Settings</button>
+    </div>
+  </form>
+</div>
+
+<footer>
+  <strong>HowlBeats</strong> — <%= guild.name %> Settings &bull; Powered by Lavalink
+</footer>
+
+<script>
+  const range = document.querySelector('.form-range');
+  const valDisplay = document.getElementById('volVal');
+  if (range && valDisplay) {
+    range.addEventListener('input', () => { valDisplay.textContent = range.value + '%'; });
+  }
+</script>
+</body>
+</html>
