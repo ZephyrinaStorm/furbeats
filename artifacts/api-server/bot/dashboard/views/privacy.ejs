@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HowlBeats — Privacy Policy</title>
+  <meta name="description" content="HowlBeats Privacy Policy — how we handle your data.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 64 }) : '/furry-avatar.jpg' %>">
+  <style>
+    .legal-page { max-width: 800px; margin: 0 auto; padding: 6rem 2rem 4rem; }
+    .legal-page h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .legal-page .legal-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 3rem; }
+    .legal-page h2 { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin: 2.2rem 0 0.6rem; }
+    .legal-page p, .legal-page li { color: var(--text-muted); line-height: 1.8; font-size: 0.97rem; }
+    .legal-page ul { padding-left: 1.4rem; margin: 0.5rem 0; }
+    .legal-page ul li { margin-bottom: 0.4rem; }
+    .legal-page a { color: var(--primary); text-decoration: none; }
+    .legal-page a:hover { text-decoration: underline; }
+    .legal-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 2rem 0; }
+    .legal-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0,184,217,0.1); border: 1px solid rgba(0,184,217,0.2); border-radius: 999px; padding: 0.3rem 1rem; font-size: 0.82rem; color: var(--primary); font-weight: 600; margin-bottom: 1.5rem; }
+    .data-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.93rem; }
+    .data-table th { text-align: left; padding: 0.6rem 1rem; background: rgba(255,255,255,0.04); color: var(--text); font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .data-table td { padding: 0.6rem 1rem; color: var(--text-muted); border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: top; }
+  </style>
+</head>
+<body>
+<%- include('header', { currentPage: '' }) %>
+
+<div class="legal-page">
+  <div class="legal-badge">🔒 Privacy Document</div>
+  <h1>Privacy Policy</h1>
+  <p class="legal-meta">Last updated: May 10, 2026 &nbsp;·&nbsp; Effective immediately</p>
+
+  <p>This Privacy Policy explains what data <strong>HowlBeats</strong> collects, how it is used, and how long it is kept. We believe in keeping things simple and collecting only what is necessary to make the bot work.</p>
+
+  <hr class="legal-divider">
+
+  <h2>1. What Data We Collect</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>Data</th><th>Source</th><th>Why We Collect It</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Guild (server) ID</td>
+        <td>Discord</td>
+        <td>To store per-server settings (volume, DJ roles, music channel, etc.)</td>
+      </tr>
+      <tr>
+        <td>Song history (title, artist, URL, duration)</td>
+        <td>Bot playback activity</td>
+        <td>To power the <code>/history</code> command (last 20 tracks per server)</td>
+      </tr>
+      <tr>
+        <td>User ID (requester)</td>
+        <td>Discord slash command interaction</td>
+        <td>To display "Requested by" in now-playing embeds</td>
+      </tr>
+      <tr>
+        <td>Discord profile (username, avatar, guild list)</td>
+        <td>Discord OAuth2 (dashboard login only)</td>
+        <td>To authenticate you on the web dashboard and show your servers</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>We do <strong>not</strong> collect message content, voice audio, passwords, email addresses, or any payment information.</p>
+
+  <h2>2. How Data Is Stored</h2>
+  <p>Server settings and song history are stored locally in JSON files on the host server. Dashboard sessions are stored in server memory and expire when the process restarts or your session times out. We do not use external databases or third-party analytics services.</p>
+
+  <h2>3. How Data Is Used</h2>
+  <ul>
+    <li><strong>Server settings</strong> — used exclusively to configure bot behaviour for that server (e.g. default volume, DJ roles).</li>
+    <li><strong>Song history</strong> — used to display the <code>/history</code> command results within the same server. Not shared externally.</li>
+    <li><strong>User ID</strong> — used only to display the requester's name in now-playing embeds.</li>
+    <li><strong>OAuth2 profile data</strong> — used only during an active dashboard session to show your username, avatar, and server list. Not persisted beyond the session.</li>
+  </ul>
+
+  <h2>4. Data Sharing</h2>
+  <p>We do not sell, rent, or share your data with any third party. The only external services involved are:</p>
+  <ul>
+    <li><strong>Discord</strong> — for bot operation and OAuth2 authentication.</li>
+    <li><strong>Lavalink / LavaSrc</strong> — for fetching and streaming audio from third-party platforms (YouTube, Spotify, etc.). HowlBeats passes search queries to the Lavalink node; we do not control what those services log.</li>
+  </ul>
+
+  <h2>5. Data Retention</h2>
+  <ul>
+    <li><strong>Server settings</strong> — retained until the bot is removed from the server or you request deletion.</li>
+    <li><strong>Song history</strong> — capped at the last 20 tracks per server; older entries are automatically discarded.</li>
+    <li><strong>OAuth2 session</strong> — expires on process restart or session timeout (typically 24 hours).</li>
+  </ul>
+
+  <h2>6. Your Rights</h2>
+  <p>You may request deletion of all data stored for your server at any time by contacting us through our <a href="<%= botConfig.support %>" target="_blank">support server</a>. To remove server settings, simply kick HowlBeats from your server — settings are tied to the server ID and become inaccessible once the bot leaves.</p>
+
+  <h2>7. Children's Privacy</h2>
+  <p>HowlBeats is not directed at children under 13. We do not knowingly collect data from children under 13. If you believe a child has provided data to HowlBeats, please contact us so we can remove it.</p>
+
+  <h2>8. Security</h2>
+  <p>We take reasonable precautions to protect stored data. However, no method of transmission or storage is 100% secure. We cannot guarantee absolute security of data stored on the host server.</p>
+
+  <h2>9. Changes to This Policy</h2>
+  <p>We may update this Privacy Policy from time to time. We will update the "Last updated" date at the top of this page. Continued use of HowlBeats after changes are posted constitutes your acceptance of the revised Policy.</p>
+
+  <h2>10. Contact</h2>
+  <p>For privacy-related questions or data deletion requests, please reach out via our <a href="<%= botConfig.support %>" target="_blank">support server</a>.</p>
+
+  <hr class="legal-divider">
+  <p style="font-size:0.88rem;color:var(--text-dim);">HowlBeats is a community project built for the furry fandom. We respect your privacy and aim to be transparent about the minimal data we handle.</p>
+</div>
+
+<footer>
+  <strong>HowlBeats</strong> — The Furry Music Bot &bull;
+  <a href="/commands">Commands</a> &bull;
+  <a href="/dashboard">Dashboard</a> &bull;
+  <a href="/terms">Terms of Service</a> &bull;
+  <a href="/privacy">Privacy Policy</a><br>
+  <small>Powered by Lavalink v4 &bull; Built with love for the furry community</small>
+</footer>
+</body>
+</html>

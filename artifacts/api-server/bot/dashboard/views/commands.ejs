@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HowlBeats — Commands</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 64 }) : '/logo.png' %>">
+</head>
+<body>
+<%- include('header', { currentPage: 'commands' }) %>
+
+<div class="commands-page">
+  <div class="commands-header">
+    <h1>📖 Commands</h1>
+    <p>
+      <strong><%= commands.length %> commands</strong> — all available as Discord slash commands. Type <code>/</code> in Discord to get started.
+    </p>
+    <div style="margin-top:0.75rem;display:flex;gap:0.4rem;flex-wrap:wrap;">
+      <span class="platform-badge" style="background:rgba(255,0,0,0.12);color:#ff6b6b;border-color:rgba(255,0,0,0.2);">▶ YouTube</span>
+      <span class="platform-badge" style="background:rgba(30,215,96,0.1);color:#1ed760;border-color:rgba(30,215,96,0.2);">🟢 Spotify</span>
+      <span class="platform-badge" style="background:rgba(252,60,68,0.1);color:#fc3c44;border-color:rgba(252,60,68,0.2);">🍎 Apple Music</span>
+      <span class="platform-badge" style="background:rgba(255,0,0,0.08);color:#fe8428;border-color:rgba(254,132,40,0.2);">🟠 Deezer</span>
+      <span class="platform-badge" style="background:rgba(255,85,0,0.1);color:#ff5500;border-color:rgba(255,85,0,0.2);">🔶 SoundCloud</span>
+      <span class="platform-badge" style="background:rgba(255,204,0,0.08);color:#ffcc00;border-color:rgba(255,204,0,0.2);">🟡 Yandex</span>
+      <span class="platform-badge" style="background:rgba(0,255,220,0.08);color:#00ffdc;border-color:rgba(0,255,220,0.2);">🌊 Tidal</span>
+      <span class="platform-badge" style="background:rgba(245,165,36,0.1);color:#f5a524;border-color:rgba(245,165,36,0.2);">🎶 Jiosaavn</span>
+      <span class="platform-badge" style="background:rgba(145,70,255,0.1);color:#9146ff;border-color:rgba(145,70,255,0.2);">💜 Twitch</span>
+      <span class="platform-badge" style="background:rgba(28,230,120,0.08);color:#1ce678;border-color:rgba(28,230,120,0.2);">🎸 Bandcamp</span>
+      <span class="platform-badge" style="background:rgba(26,183,234,0.08);color:#1ab7ea;border-color:rgba(26,183,234,0.2);">🎬 Vimeo</span>
+      <span class="platform-badge" style="background:rgba(88,166,255,0.08);color:#58a6ff;border-color:rgba(88,166,255,0.2);">📡 HTTP Streams</span>
+    </div>
+  </div>
+
+  <div class="search-bar-wrap">
+    <input type="text" id="cmdSearch" placeholder="Search commands..." autocomplete="off" spellcheck="false">
+  </div>
+
+  <%
+    const catIcons = { Music: "🎵", Queue: "📋", Settings: "⚙️", Info: "ℹ️", Filter: "🎚️" };
+    const cats = {};
+    commands.forEach(cmd => {
+      const cat = cmd.category || "Misc";
+      if (!cats[cat]) cats[cat] = [];
+      cats[cat].push(cmd);
+    });
+    const catOrder = ["Music", "Queue", "Filter", "Settings", "Info"];
+    const catList = catOrder.filter(c => cats[c]).concat(Object.keys(cats).filter(c => !catOrder.includes(c)));
+  %>
+
+  <div class="cat-tabs" id="catTabs">
+    <button class="cat-tab active" data-cat="all">All <span style="opacity:0.7;">(<%= commands.length %>)</span></button>
+    <% catList.forEach(cat => { %>
+      <button class="cat-tab" data-cat="<%= cat %>"><%= catIcons[cat] || '📁' %> <%= cat %> <span style="opacity:0.7;">(<%= cats[cat].length %>)</span></button>
+    <% }) %>
+  </div>
+
+  <div id="commandsContainer">
+    <% catList.forEach(cat => { %>
+    <div class="commands-section" data-section="<%= cat %>">
+      <div class="commands-section-header">
+        <h2><%= catIcons[cat] || '📁' %> <%= cat %></h2>
+        <span class="cat-count"><%= cats[cat].length %></span>
+      </div>
+      <div class="commands-grid">
+        <% cats[cat].forEach(cmd => { %>
+        <div class="command-card" data-name="<%= cmd.name %>" data-desc="<%= (cmd.description || '').toLowerCase() %>" data-cat="<%= cat %>">
+          <div class="cmd-names">
+            <div class="cmd-name">/<%= cmd.name %></div>
+          </div>
+          <div class="cmd-body">
+            <div class="cmd-desc"><%= cmd.description || 'No description' %></div>
+            <div class="cmd-meta">
+              <% if (cmd.usage && cmd.usage !== cmd.name) { %>
+                <span class="cmd-usage-badge"><%= cmd.usage %></span>
+              <% } %>
+              <% if (cmd.cooldown && cmd.cooldown > 1) { %>
+                <span class="cmd-usage-badge" style="color:var(--text-dim);">⏱ <%= cmd.cooldown %>s</span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+  <p id="noResults" style="display:none;text-align:center;padding:3rem;color:var(--text-muted);">🐾 No commands found for "<span id="searchTerm"></span>"</p>
+</div>
+
+<footer>
+  <strong>HowlBeats</strong> — <%= commands.length %> slash commands &bull; 11 platforms: YouTube • Spotify • Apple Music • Deezer • SoundCloud • Tidal • Jiosaavn • Twitch • Bandcamp • Vimeo & more
+</footer>
+
+<script>
+  const search = document.getElementById('cmdSearch');
+  const tabs = document.querySelectorAll('.cat-tab');
+  const sections = document.querySelectorAll('.commands-section');
+  const noResults = document.getElementById('noResults');
+  let activeCat = 'all';
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeCat = tab.dataset.cat;
+      filterCommands();
+    });
+  });
+
+  search.addEventListener('input', filterCommands);
+
+  function filterCommands() {
+    const q = search.value.toLowerCase().trim();
+    let visible = 0;
+
+    sections.forEach(sec => {
+      const cat = sec.dataset.section;
+      let secVisible = 0;
+      const secCards = sec.querySelectorAll('.command-card');
+      secCards.forEach(card => {
+        const matchCat = activeCat === 'all' || card.dataset.cat === activeCat;
+        const matchSearch = !q || card.dataset.name.includes(q) || card.dataset.desc.includes(q);
+        const show = matchCat && matchSearch;
+        card.style.display = show ? '' : 'none';
+        if (show) { secVisible++; visible++; }
+      });
+      sec.style.display = secVisible > 0 ? '' : 'none';
+    });
+
+    noResults.style.display = visible === 0 ? '' : 'none';
+    document.getElementById('searchTerm').textContent = q;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HowlBeats — Terms of Service</title>
+  <meta name="description" content="HowlBeats Terms of Service — please read before using the bot or dashboard.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 64 }) : '/furry-avatar.jpg' %>">
+  <style>
+    .legal-page { max-width: 800px; margin: 0 auto; padding: 6rem 2rem 4rem; }
+    .legal-page h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .legal-page .legal-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 3rem; }
+    .legal-page h2 { font-size: 1.15rem; font-weight: 700; color: var(--primary); margin: 2.2rem 0 0.6rem; }
+    .legal-page p, .legal-page li { color: var(--text-muted); line-height: 1.8; font-size: 0.97rem; }
+    .legal-page ul { padding-left: 1.4rem; margin: 0.5rem 0; }
+    .legal-page ul li { margin-bottom: 0.4rem; }
+    .legal-page a { color: var(--primary); text-decoration: none; }
+    .legal-page a:hover { text-decoration: underline; }
+    .legal-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 2rem 0; }
+    .legal-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(0,184,217,0.1); border: 1px solid rgba(0,184,217,0.2); border-radius: 999px; padding: 0.3rem 1rem; font-size: 0.82rem; color: var(--primary); font-weight: 600; margin-bottom: 1.5rem; }
+  </style>
+</head>
+<body>
+<%- include('header', { currentPage: '' }) %>
+
+<div class="legal-page">
+  <div class="legal-badge">📄 Legal Document</div>
+  <h1>Terms of Service</h1>
+  <p class="legal-meta">Last updated: May 10, 2026 &nbsp;·&nbsp; Effective immediately</p>
+
+  <p>Welcome to <strong>HowlBeats</strong>. By inviting the bot to your Discord server, using the web dashboard, or otherwise accessing any HowlBeats service, you agree to be bound by these Terms of Service. If you do not agree, please do not use HowlBeats.</p>
+
+  <hr class="legal-divider">
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>These Terms apply to all users of HowlBeats, including server administrators, moderators, and regular members. By using HowlBeats you confirm that you are at least 13 years old and meet Discord's minimum age requirement in your jurisdiction.</p>
+
+  <h2>2. Description of Service</h2>
+  <p>HowlBeats is a Discord music bot and accompanying web dashboard. It provides:</p>
+  <ul>
+    <li>Music playback from 11+ platforms via Lavalink v4</li>
+    <li>Queue management, audio filters, and DJ controls</li>
+    <li>A web dashboard for server settings and live queue viewing</li>
+    <li>Discord OAuth2 login for dashboard access</li>
+  </ul>
+  <p>HowlBeats is provided free of charge and on an "as-is" basis.</p>
+
+  <h2>3. Acceptable Use</h2>
+  <p>You agree not to use HowlBeats to:</p>
+  <ul>
+    <li>Violate Discord's <a href="https://discord.com/terms" target="_blank">Terms of Service</a> or <a href="https://discord.com/guidelines" target="_blank">Community Guidelines</a></li>
+    <li>Stream, share, or reproduce content in a way that infringes on intellectual property rights</li>
+    <li>Attempt to abuse, spam, flood, or disrupt the bot or its underlying infrastructure</li>
+    <li>Reverse-engineer, decompile, or tamper with any part of the service</li>
+    <li>Use the bot for any unlawful purpose or in violation of applicable law</li>
+  </ul>
+  <p>We reserve the right to restrict or terminate access for any user or server that violates these terms.</p>
+
+  <h2>4. Music Streaming &amp; Copyright</h2>
+  <p>HowlBeats plays audio from third-party platforms (YouTube, Spotify, SoundCloud, etc.) via publicly accessible Lavalink nodes. HowlBeats does not host, store, or distribute audio files. Users are solely responsible for ensuring their use of streamed content complies with applicable copyright law and each platform's terms of service.</p>
+
+  <h2>5. Dashboard &amp; Authentication</h2>
+  <p>The web dashboard uses Discord OAuth2. By logging in you grant HowlBeats read access to your Discord user profile and guild list for the purpose of managing server settings. We do not store your OAuth2 tokens beyond your active session.</p>
+
+  <h2>6. Availability &amp; Modifications</h2>
+  <p>HowlBeats is provided on a best-effort basis. We do not guarantee uptime, continuous availability, or uninterrupted access. We may modify, suspend, or discontinue any part of the service at any time without prior notice.</p>
+
+  <h2>7. Disclaimer of Warranties</h2>
+  <p>HowlBeats is provided "as is" and "as available" without warranties of any kind, either express or implied. We make no warranty that the service will be error-free, secure, or meet your requirements.</p>
+
+  <h2>8. Limitation of Liability</h2>
+  <p>To the fullest extent permitted by law, the HowlBeats team shall not be liable for any indirect, incidental, special, or consequential damages arising out of or related to your use of the service.</p>
+
+  <h2>9. Changes to These Terms</h2>
+  <p>We may update these Terms from time to time. Continued use of HowlBeats after changes are posted constitutes your acceptance of the revised Terms. We will update the "Last updated" date at the top of this page.</p>
+
+  <h2>10. Contact</h2>
+  <p>If you have questions about these Terms, please reach out via our <a href="<%= botConfig.support %>" target="_blank">support server</a>.</p>
+
+  <hr class="legal-divider">
+  <p style="font-size:0.88rem;color:var(--text-dim);">These terms govern your use of HowlBeats and do not create a formal legal relationship beyond what is described above. HowlBeats is a community project made with 🐾 for the furry fandom.</p>
+</div>
+
+<footer>
+  <strong>HowlBeats</strong> — The Furry Music Bot &bull;
+  <a href="/commands">Commands</a> &bull;
+  <a href="/dashboard">Dashboard</a> &bull;
+  <a href="/terms">Terms of Service</a> &bull;
+  <a href="/privacy">Privacy Policy</a><br>
+  <small>Powered by Lavalink v4 &bull; Built with love for the furry community</small>
+</footer>
+</body>
+</html>

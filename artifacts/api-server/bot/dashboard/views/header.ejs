@@ -1,0 +1,30 @@
+<nav class="navbar">
+  <a class="navbar-brand" href="/">
+    <img src="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 128 }) : '/furry-avatar.jpg' %>" alt="HowlBeats">
+    HowlBeats
+  </a>
+
+  <div class="navbar-links" id="navLinks">
+    <a href="/#features" class="<%= currentPage === 'home' ? 'active' : '' %>">Features</a>
+    <a href="/commands" class="<%= currentPage === 'commands' ? 'active' : '' %>">Commands</a>
+    <a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">About</a>
+    <a href="/dashboard" class="<%= currentPage === 'dashboard' ? 'active' : '' %>">Dashboard</a>
+  </div>
+
+  <div class="navbar-right">
+    <% if (user && user.id) { %>
+      <div class="user-tag">
+        <img src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png?size=64"
+          onerror="this.style.display='none'" alt="">
+        <span><%= user.username %></span>
+      </div>
+      <a href="/logout" class="btn btn-ghost btn-sm">Logout</a>
+    <% } else { %>
+      <a href="https://discord.com/api/oauth2/authorize?client_id=<%= botClient.user ? botClient.user.id : '' %>&permissions=8&scope=bot%20applications.commands" target="_blank" class="btn btn-primary btn-sm">Invite Bot</a>
+    <% } %>
+  </div>
+
+  <button class="hamburger" id="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>

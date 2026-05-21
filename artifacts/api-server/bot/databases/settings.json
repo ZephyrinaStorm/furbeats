@@ -1,0 +1,20 @@
+{
+  "1474976000101318809": {
+    "prefix": "/",
+    "defaultvolume": 80,
+    "defaultautoplay": true,
+    "djroles": [],
+    "botchannel": [],
+    "musicChannel": null,
+    "musicMessage": null
+  },
+  "1444369252780871765": {
+    "prefix": "/",
+    "defaultvolume": 80,
+    "defaultautoplay": false,
+    "djroles": [],
+    "botchannel": [],
+    "musicChannel": null,
+    "musicMessage": null
+  }
+}

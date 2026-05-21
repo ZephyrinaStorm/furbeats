@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About — HowlBeats</title>
+  <meta name="description" content="Learn about HowlBeats — the furry-themed Discord music bot built for the furry community.">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="icon" href="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 64 }) : '/logo.png' %>">
+  <style>
+    .about-page { max-width: 860px; margin: 0 auto; padding: 4rem 1.5rem 6rem; }
+
+    .about-hero {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+      padding: 2.5rem;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      position: relative;
+      overflow: hidden;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 0% 50%, rgba(255,140,0,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .about-hero-avatar {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 30px var(--primary-glow);
+      flex-shrink: 0;
+    }
+    .about-hero-text h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 0.3rem;
+    }
+    .about-hero-text p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .about-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(255,140,0,0.1);
+      border: 1px solid rgba(255,140,0,0.25);
+      color: var(--primary-light);
+      border-radius: 20px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 0.75rem;
+      margin-right: 0.4rem;
+    }
+
+    .about-section { margin-bottom: 3rem; }
+    .about-section h2 {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--primary-light);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .about-section p {
+      color: var(--text-muted);
+      line-height: 1.8;
+      font-size: 0.97rem;
+      margin-bottom: 0.9rem;
+    }
+    .about-section p strong { color: var(--text); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .about-stat-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .about-stat-card:hover { border-color: var(--card-border-hover); transform: translateY(-3px); }
+    .about-stat-num {
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .about-stat-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tech-stack-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+    }
+    .tech-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 0.75rem 1rem;
+      transition: border-color 0.2s;
+    }
+    .tech-row:hover { border-color: var(--card-border-hover); }
+    .tech-icon { font-size: 1.3rem; flex-shrink: 0; }
+    .tech-name { font-weight: 700; color: var(--text); font-size: 0.92rem; min-width: 160px; }
+    .tech-desc { color: var(--text-muted); font-size: 0.85rem; }
+
+    .platform-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .timeline-item { position: relative; }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -1.65rem;
+      top: 0.35rem;
+      width: 10px; height: 10px;
+      background: var(--primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+    .timeline-item h3 { font-size: 0.95rem; font-weight: 800; color: var(--primary-light); margin-bottom: 0.2rem; }
+    .timeline-item p { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; margin: 0; }
+
+    .about-links { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+<%- include('header', { currentPage: 'about' }) %>
+
+<div class="about-page">
+
+  <!-- HERO -->
+  <div class="about-hero">
+    <img src="<%= botClient.user ? botClient.user.displayAvatarURL({ size: 256 }) : '/logo.png' %>"
+      class="about-hero-avatar" alt="HowlBeats">
+    <div class="about-hero-text">
+      <h1>HowlBeats 🐾</h1>
+      <p>A furry-themed Discord music bot built to bring high-quality, multi-platform audio to every corner of the furry community — with style, paws, and zero compromise.</p>
+      <div style="margin-top:0.75rem;">
+        <span class="about-badge">🎵 Music Bot</span>
+        <span class="about-badge">🐾 Furry-Themed</span>
+        <span class="about-badge">⚡ Lavalink Powered</span>
+        <span class="about-badge">🌐 11 Platforms</span>
+        <span class="about-badge">✨ 55 Commands</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE STATS -->
+  <div class="about-section">
+    <h2>📊 Live Stats</h2>
+    <div class="about-grid">
+      <div class="about-stat-card">
+        <div class="about-stat-num"><%= botClient.guilds.cache.size.toLocaleString() %></div>
+        <div class="about-stat-label">Servers</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num"><%= botClient.guilds.cache.reduce((a,g) => a + g.memberCount, 0).toLocaleString() %></div>
+        <div class="about-stat-label">Users Reached</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num"><%= botClient.kazagumo ? botClient.kazagumo.players.size : 0 %></div>
+        <div class="about-stat-label">Active Players</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num"><%= commands.length %></div>
+        <div class="about-stat-label">Commands</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num"><%= Math.round(botClient.ws.ping) %>ms</div>
+        <div class="about-stat-label">API Ping</div>
+      </div>
+      <div class="about-stat-card">
+        <div class="about-stat-num">11</div>
+        <div class="about-stat-label">Platforms</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKGROUND & MISSION -->
+  <div class="about-section">
+    <h2>🐾 Background &amp; Mission</h2>
+    <p>
+      <strong>HowlBeats</strong> was created out of a simple frustration — existing music bots were either unreliable,
+      feature-locked behind paywalls, or just didn't feel like they belonged in a furry server. The furry community deserves
+      something built <em>for</em> them: a bot with personality, depth, and the kind of features that actually matter when
+      you're vibing in VC with your pack.
+    </p>
+    <p>
+      The mission is to keep HowlBeats <strong>free forever</strong>, with no premium tiers, no crippled free plans,
+      and no artificial limits. Every feature — from audio filters to saved playlists to the live web dashboard — is available
+      to every server the moment the bot is invited.
+    </p>
+    <p>
+      The bot is built around <strong>Lavalink</strong>, the same audio engine used by the biggest music bots on Discord,
+      meaning crystal-clear audio without the lag or buffering that plagues smaller bots. Paired with the
+      <strong>LavaSrc</strong> plugin, HowlBeats can pull tracks from 11 different platforms — not just YouTube.
+    </p>
+  </div>
+
+  <!-- WHAT MAKES IT DIFFERENT -->
+  <div class="about-section">
+    <h2>✨ What Makes It Different</h2>
+    <p>
+      Most music bots do one thing: play YouTube. HowlBeats goes further — <strong>paste any link from any supported platform</strong>
+      and it just works. Spotify playlist? Done. Apple Music album? Done. Twitch live stream? Done. Jiosaavn for Bollywood nights? Done.
+    </p>
+    <p>
+      The <strong>audio filter system</strong> lets you stack 19+ presets — bassboost, nightcore, 8D audio, vaporwave, karaoke, and more —
+      or dial in a completely custom EQ with <code>/setfilter</code>. No other free bot comes close to this level of audio customisation.
+    </p>
+    <p>
+      The <strong>web dashboard</strong> gives server admins full control without touching Discord — manage DJ roles,
+      set default volume, configure the music channel, and watch the queue update live every 3 seconds, all from a browser.
+    </p>
+  </div>
+
+  <!-- MILESTONES / TIMELINE -->
+  <div class="about-section">
+    <h2>📅 Project Timeline</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <h3>🐣 The Beginning</h3>
+        <p>HowlBeats started as a private bot for a small furry Discord server — slash commands only, basic queue management, and a simple amber theme inspired by the warm glow of a campfire.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>🎚️ Filters &amp; Queue System</h3>
+        <p>19 audio filter presets, custom EQ, full queue control (shuffle, loop, history, saved playlists) and the DJ role system were added — turning it into a fully-featured music suite.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>🌐 Web Dashboard Launch</h3>
+        <p>The Express + EJS dashboard went live with Discord OAuth2 login, live queue viewer (auto-refreshing every 3 seconds), and per-server settings management.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>🎵 Multi-Platform Expansion</h3>
+        <p>LavaSrc plugin integration brought Spotify, Apple Music, Deezer, Yandex Music, Tidal, and Jiosaavn. Native Lavalink support added Twitch live streams, Bandcamp, and Vimeo — 11 platforms total.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>🐾 Today — HowlBeats</h3>
+        <p>55 slash commands, a full interactive help panel, paginated sources browser, multi-platform smart URL detection, and a polished furry-themed website at <strong>furvibeztunes.xyz</strong> — and growing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECH STACK -->
+  <div class="about-section">
+    <h2>🛠️ Tech Stack</h2>
+    <div class="tech-stack-list">
+      <div class="tech-row">
+        <span class="tech-icon">🤖</span>
+        <span class="tech-name">discord.js v14</span>
+        <span class="tech-desc">Discord gateway, slash commands, button interactions, embeds</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-icon">⚡</span>
+        <span class="tech-name">Kazagumo v3 + Shoukaku v4</span>
+        <span class="tech-desc">Lavalink wrapper — queue management, player controls, audio routing</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-icon">🎵</span>
+        <span class="tech-name">Lavalink + LavaSrc</span>
+        <span class="tech-desc">Crystal-clear audio engine with 11-platform support via plugin</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-icon">🌐</span>
+        <span class="tech-name">Express 5 + EJS</span>
+        <span class="tech-desc">Web dashboard with server-side rendering, Discord OAuth2 via Passport</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-icon">📦</span>
+        <span class="tech-name">Node.js 24 + TypeScript</span>
+        <span class="tech-desc">ESM entry compiled with esbuild, CommonJS bot code for compatibility</span>
+      </div>
+      <div class="tech-row">
+        <span class="tech-icon">💾</span>
+        <span class="tech-name">JsonStore (custom)</span>
+        <span class="tech-desc">Lightweight JSON-file persistence for per-server settings and playlists</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLATFORMS -->
+  <div class="about-section">
+    <h2>🎧 Supported Platforms</h2>
+    <p>HowlBeats can play from <strong>11 music and streaming platforms</strong>. Just paste a link or search by name with <code>/play</code>.</p>
+    <div class="platform-list">
+      <span class="platform-badge" style="background:rgba(255,0,0,0.12);color:#ff6b6b;border-color:rgba(255,0,0,0.2);">▶ YouTube</span>
+      <span class="platform-badge" style="background:rgba(30,215,96,0.1);color:#1ed760;border-color:rgba(30,215,96,0.2);">🟢 Spotify</span>
+      <span class="platform-badge" style="background:rgba(252,60,68,0.1);color:#fc3c44;border-color:rgba(252,60,68,0.2);">🍎 Apple Music</span>
+      <span class="platform-badge" style="background:rgba(255,0,0,0.08);color:#fe8428;border-color:rgba(254,132,40,0.2);">🟠 Deezer</span>
+      <span class="platform-badge" style="background:rgba(255,85,0,0.1);color:#ff5500;border-color:rgba(255,85,0,0.2);">🔶 SoundCloud</span>
+      <span class="platform-badge" style="background:rgba(255,204,0,0.08);color:#ffcc00;border-color:rgba(255,204,0,0.2);">🟡 Yandex Music</span>
+      <span class="platform-badge" style="background:rgba(0,255,220,0.08);color:#00ffdc;border-color:rgba(0,255,220,0.2);">🌊 Tidal</span>
+      <span class="platform-badge" style="background:rgba(245,165,36,0.1);color:#f5a524;border-color:rgba(245,165,36,0.2);">🎶 Jiosaavn</span>
+      <span class="platform-badge" style="background:rgba(145,70,255,0.1);color:#9146ff;border-color:rgba(145,70,255,0.2);">💜 Twitch</span>
+      <span class="platform-badge" style="background:rgba(28,230,120,0.08);color:#1ce678;border-color:rgba(28,230,120,0.2);">🎸 Bandcamp</span>
+      <span class="platform-badge" style="background:rgba(26,183,234,0.08);color:#1ab7ea;border-color:rgba(26,183,234,0.2);">🎬 Vimeo</span>
+      <span class="platform-badge" style="background:rgba(88,166,255,0.08);color:#58a6ff;border-color:rgba(88,166,255,0.2);">📡 HTTP Streams</span>
+    </div>
+  </div>
+
+  <!-- LINKS / CTA -->
+  <div class="about-section">
+    <h2>🔗 Links</h2>
+    <div class="about-links">
+      <a href="https://discord.com/api/oauth2/authorize?client_id=<%= botClient.user ? botClient.user.id : '' %>&permissions=8&scope=bot%20applications.commands"
+        target="_blank" class="btn btn-primary">📩 Invite the Bot</a>
+      <a href="<%= botConfig.support %>" target="_blank" class="btn btn-secondary">💬 Support Server</a>
+      <a href="/commands" class="btn btn-secondary">📖 Commands</a>
+      <a href="/dashboard" class="btn btn-ghost">🎛 Dashboard</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <strong>HowlBeats</strong> — The Furry Music Bot &bull;
+  <a href="/commands">Commands</a> &bull;
+  <a href="/about">About</a> &bull;
+  <a href="/dashboard">Dashboard</a><br>
+  <small>Powered by Lavalink • Multi-platform music • Built with 🧡 for the furry community</small>
+</footer>
+</body>
+</html>
