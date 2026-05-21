@@ -74,14 +74,19 @@ module.exports = (client, port) => {
     ? `${botConfig.website}/callback`
     : (process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(",")[0]}/callback` : `http://localhost:${port}/callback`);
 
-  passport.use(new Strategy({
-    clientID: process.env.DISCORD_CLIENT_ID,
-    clientSecret: process.env.DISCORD_CLIENT_SECRET,
-    callbackURL,
-    scope: ["identify", "guilds"],
-  }, (accessToken, refreshToken, profile, done) => {
-    process.nextTick(() => done(null, profile));
-  }));
+  const hasOAuth = process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET;
+  if (hasOAuth) {
+    passport.use(new Strategy({
+      clientID: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_CLIENT_SECRET,
+      callbackURL,
+      scope: ["identify", "guilds"],
+    }, (accessToken, refreshToken, profile, done) => {
+      process.nextTick(() => done(null, profile));
+    }));
+  } else {
+    console.log("[HowlBeats] DISCORD_CLIENT_ID / DISCORD_CLIENT_SECRET not set — OAuth disabled (public pages only)");
+  }
 
   app.use(session({
     store: new MemoryStore({ checkPeriod: 86400000 }),
@@ -126,11 +131,15 @@ module.exports = (client, port) => {
   });
 
   app.get("/login", (req, res, next) => {
+    if (!hasOAuth) return res.redirect("/?error=OAuth+not+configured");
     if (!req.session.backURL) req.session.backURL = "/";
     next();
-  }, passport.authenticate("discord", { prompt: "consent" }));
+  }, (req, res, next) => { if (hasOAuth) passport.authenticate("discord", { prompt: "consent" })(req, res, next); });
 
-  app.get("/callback", passport.authenticate("discord", { failureRedirect: "/" }), (req, res) => {
+  app.get("/callback", (req, res, next) => {
+    if (!hasOAuth) return res.redirect("/");
+    passport.authenticate("discord", { failureRedirect: "/" })(req, res, next);
+  }, (req, res) => {
     res.redirect(req.session.backURL || "/dashboard");
   });
 
